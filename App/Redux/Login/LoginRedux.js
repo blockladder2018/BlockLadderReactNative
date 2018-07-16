@@ -11,7 +11,9 @@ export const INITIAL_STATE = Immutable({
   password: '',
   invitationCode: '',
   verificationCode: '',
-  accessToken: '',
+  token: '',
+  user: '',
+  isLogging: false,
   errorMessage: '',
 });
 
@@ -22,8 +24,10 @@ const { Types, Creators } = createActions({
   setPassword: ['password'],
   setInvitationCode: ['invitationCode'],
   setVerificationCode: ['verificationCode'],
-  setAccessToken: ['accessToken'],
-  loginSuccess: ['accessToken'],
+  setToken: ['token'],
+  setUser: ['user'],
+  startLogin: null,
+  loginSuccess: ['token', 'user'],
   loginFail: ['errorMessage'],
   clear: null,
 });
@@ -60,16 +64,17 @@ Creators.sentSmsVerification = () => {
 
 Creators.login = () => {
   return (dispatch, getState) => {
+    dispatch(Creators.startLogin());
     const state = getState().login;
     return axios.post('http://138.197.223.133:8000/api/v1/users/login', {
-      mobile: state.mobile,
+      username: state.mobile,
       password: state.password,
     }).then((response) => {
-      const accessToken = response.data.access_token;
-      return dispatch(Creators.loginSuccess(accessToken));
+      const token = response.data.token;
+      const user = response.data.user;
+      return dispatch(Creators.loginSuccess());
     }).catch((error) => {
-      dispatch(Creators.loginFail());
-      console.log(error);
+      return dispatch(Creators.loginFail(error));
     });
   };
 };
@@ -111,16 +116,31 @@ export const setVerificationCodeReducer = (state = INITIAL_STATE, { verification
   return state.merge({ verificationCode });
 };
 
-export const setAccessTokenReducer = (state = INITIAL_STATE, { accessToken }) => {
-  return state.merge({ accessToken });
+export const setTokenReducer = (state = INITIAL_STATE, { token }) => {
+  return state.merge({ token });
 };
 
-const loginSuccessReducer = (state = INITIAL_STATE, { accessToken }) => {
-  return state.merge({ accessToken });
+export const setUserReducer = (state = INITIAL_STATE, { user }) => {
+  return state.merge({ user });
+}
+
+export const startLoginReducer = (state = INITIAL_STATE) => {
+  return state.merge({ isLogging: true });
+}
+
+const loginSuccessReducer = (state = INITIAL_STATE, { token, user }) => {
+  return state.merge({
+    isLogging: false,
+    token,
+    user,
+  });
 }
 
 const loginFailReducer = (state = INITIAL_STATE, { errorMessage }) => {
-  return state.merge({ errorMessage });
+  return state.merge({
+    isLogging: false,
+    errorMessage,
+  });
 }
 
 const clearReducer = () => INITIAL_STATE;
@@ -132,7 +152,9 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.SET_PASSWORD]: setPasswordReducer,
   [Types.SET_INVITATION_CODE]: setInvitationCodeReducer,
   [Types.SET_VERIFICATION_CODE]: setVerificationCodeReducer,
-  [Types.SET_ACCESS_TOKEN]: setAccessTokenReducer,
+  [Types.SET_TOKEN]: setTokenReducer,
+  [Types.SET_USER]: setUserReducer,
+  [Types.START_LOGIN]: startLoginReducer,
   [Types.LOGIN_SUCCESS]: loginSuccessReducer,
   [Types.LOGIN_FAIL]: loginFailReducer,
   [Types.CLEAR]: clearReducer,

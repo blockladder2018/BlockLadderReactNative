@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
-import { ButtonDark, ButtonEnableDisable, Input } from 'App/Components';
+import { ButtonDark, ButtonEnableDisable, Input, Spinner } from 'App/Components';
 import LoginRedux from 'App/Redux/Login/LoginRedux';
 import NavigationRedux from 'App/Redux/Navigation/NavigationRedux';
 
@@ -16,7 +16,12 @@ class LoginScreen extends Component {
       password,
       invitationCode,
       verificationCode,
+      isLogging,
     } = this.props;
+
+    if (isLogging) {
+      return <Spinner />
+    }
 
     return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -45,8 +50,10 @@ class LoginScreen extends Component {
           disabled={_.isEmpty(mobile) || _.isEmpty(password)}
           title='Login'
           onPress={() => {
-            console.log('Login button pressed, mobile: ' + mobile + '; password: ' + password);
-            this.props.login();
+            this.props.login().then((response) => {
+              console.log('Succesfully logged in');
+              this.props.afterLogin();
+            });
           }}
         />
 
@@ -68,7 +75,9 @@ const mapStateToProps = ({ login }) => {
     password: login.password,
     invitationCode: login.invitationCode,
     verificationCode: login.verificationCode,
-    accessToken: login.accessToken,
+    token: login.token,
+    user: login.user,
+    isLogging: login.isLogging,
   };
 };
 
@@ -97,11 +106,13 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(LoginRedux.sentSmsVerification());
     },
     login: () => {
-      //return dispatch(LoginRedux.login());
-      return dispatch(NavigationRedux.login());
+      return dispatch(LoginRedux.login());
     },
     confirmSms: () => {
       return dispatch(LoginRedux.confirmSms());
+    },
+    afterLogin: () => {
+      dispatch(NavigationRedux.login());
     },
   };
 };

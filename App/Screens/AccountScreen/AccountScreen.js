@@ -9,7 +9,7 @@ class AccountScreen extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
         <View>
-          <Text>This is the Account Screen</Text>
+          <Text>This is the Account Screen!!!</Text>
         </View>
       </View>
     );
