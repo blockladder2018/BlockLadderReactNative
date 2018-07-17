@@ -13,12 +13,6 @@ const { Types, Creators } = createActions({
   clear: null,
 });
 
-Creators.login = () => {
-  return (dispatch) => {
-    dispatch(Creators.changeRoot('after-login'));
-  };
-}
-
 export default Creators;
 
 /* ------------- Reducers ------------- */

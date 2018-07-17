@@ -4,9 +4,7 @@ import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import { ButtonDark, ButtonEnableDisable, Input, Spinner } from 'App/Components';
-import { LoginController } from 'App/Controllers';
-import NavigationRedux from 'App/Redux/Navigation/NavigationRedux';
-import store from 'App/Redux';
+import { LoginController, NavigationController } from 'App/Controllers';
 
 class LoginScreen extends Component {
 
@@ -46,10 +44,8 @@ class LoginScreen extends Component {
             disabled={_.isEmpty(username) || _.isEmpty(password)}
             title='Login'
             onPress={() => {
-              console.log('Login button pressed: ' + username + ' ' + password);
-              // TODO: Migrate to call NavigationController
               LoginController.login().then(() => {
-                store.dispatch(NavigationRedux.login());
+                NavigationController.navigateToAfterLogin();
               }).catch(() => {
                 console.log('Login failed!')
               });

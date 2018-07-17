@@ -4,10 +4,7 @@ import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import { ButtonDark } from 'App/Components';
-import { LoginController } from 'App/Controllers';
-
-import NavigationRedux from 'App/Redux/Navigation/NavigationRedux';
-import store from 'App/Redux';
+import { LoginController, NavigationController } from 'App/Controllers';
 
 class AccountScreen extends Component {
 
@@ -18,8 +15,7 @@ class AccountScreen extends Component {
           title = 'Log out'
           onPress={() => {
             LoginController.logout().then(() => {
-              // TODO: migrate to use NavigationController
-              store.dispatch(NavigationRedux.changeRoot('login'));
+              NavigationController.navigateToLogin();
             });
           }}
         />
