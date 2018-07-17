@@ -56,6 +56,14 @@ class LoginScreen extends Component {
             title='Register'
             onPress={() => {
               console.log('Register button pressed');
+              this.props.navigator.showModal({
+                screen: 'BlockLadderReactNative.RegisterScreen',
+                title: 'Register',
+                passProps: {},
+                navigatorStyle: {},
+                animationType: 'slide-up',
+              })
+
             }}
           />
 
