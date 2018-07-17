@@ -4,19 +4,20 @@ import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import { ButtonDark, ButtonEnableDisable, Input, Spinner } from 'App/Components';
-import LoginRedux from 'App/Redux/Login/LoginRedux';
+import { LoginController } from 'App/Controllers';
 import NavigationRedux from 'App/Redux/Navigation/NavigationRedux';
+import store from 'App/Redux';
 
 class LoginScreen extends Component {
 
   render() {
     const {
       country,
-      mobile,
+      username,
       password,
-      invitationCode,
       verificationCode,
       isLogging,
+      errorMessage,
     } = this.props;
 
     if (isLogging) {
@@ -26,43 +27,48 @@ class LoginScreen extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
         <Input
-          label='Mobile Number'
-          value={mobile}
-          onChangeText={(text) => {
-            this.props.setMobile(text);
-            console.log('mobile number input');
-          }}
-          onSubmitEditing={() => console.log('submitted')}
+          label='Username'
+          value={username}
+          onChangeText={(text) => LoginController.setUsername(text)}
+          onSubmitEditing={() => console.log('Username entered')}
         />
 
         <Input
           label='Password'
           value={password}
           secureTextEntry={true}
-          onChangeText={(text) => {
-            this.props.setPassword(text);
-            console.log('password input');
-          }}
+          onChangeText={(text) => LoginController.setPassword(text)}
           onSubmitEditing={() => console.log('submitted')}
         />
 
-        <ButtonEnableDisable
-          disabled={_.isEmpty(mobile) || _.isEmpty(password)}
-          title='Login'
-          onPress={() => {
-            this.props.login().then((response) => {
-              console.log('Succesfully logged in');
-              this.props.afterLogin();
-            });
-          }}
-        />
+        <View style={{ marginTop: 30 }}>
+          <ButtonEnableDisable
+            disabled={_.isEmpty(username) || _.isEmpty(password)}
+            title='Login'
+            onPress={() => {
+              console.log('Login button pressed: ' + username + ' ' + password);
+              // TODO: Migrate to call NavigationController
+              LoginController.login().then(() => {
+                store.dispatch(NavigationRedux.login());
+              }).catch(() => {
+                console.log('Login failed!')
+              });
+            }}
+          />
 
-        <ButtonDark
-          title='Register'
-          onPress={() => {
-            console.log('register button pressed');
-          }}
-        />
+          <ButtonDark
+            title='Register'
+            onPress={() => {
+              console.log('Register button pressed');
+            }}
+          />
+
+          <View>
+            <Text style={{ color: 'red', textAlign: 'center', fontSize: 20 }}>
+              {errorMessage}
+            </Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -71,50 +77,14 @@ class LoginScreen extends Component {
 const mapStateToProps = ({ login }) => {
   return {
     country: login.country,
-    mobile: login.mobile,
+    username: login.username,
     password: login.password,
-    invitationCode: login.invitationCode,
     verificationCode: login.verificationCode,
     token: login.token,
     user: login.user,
     isLogging: login.isLogging,
+    errorMessage: login.errorMessage,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setCountry: (text) => {
-      dispatch(LoginRedux.setCountry(text));
-    },
-    setMobile: (text) => {
-      dispatch(LoginRedux.setMobile(text));
-    },
-    setPassword: (text) => {
-      dispatch(LoginRedux.setPassword(text));
-    },
-    setInvitationCode: (text) => {
-      dispatch(LoginRedux.setInvitationCode(text));
-    },
-    setVerificationCode: (text) => {
-      dispatch(LoginRedux.setVerificationCode(text));
-    },
-
-    register: () => {
-      return dispatch(LoginRedux.register());
-    },
-    sentSmsVerification: () => {
-      return dispatch(LoginRedux.sentSmsVerification());
-    },
-    login: () => {
-      return dispatch(LoginRedux.login());
-    },
-    confirmSms: () => {
-      return dispatch(LoginRedux.confirmSms());
-    },
-    afterLogin: () => {
-      dispatch(NavigationRedux.login());
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default connect(mapStateToProps)(LoginScreen);
