@@ -5,6 +5,10 @@ import LoginRedux from 'App/Redux/Login';
 
 class LoginController {
 
+  clear() {
+    return store.dispatch(LoginRedux.clear());
+  }
+
   setCountry(country: string) {
     return store.dispatch(LoginRedux.setCountry(country));
   }
@@ -36,8 +40,8 @@ class LoginController {
         store.dispatch(LoginRedux.loginSuccess(token, user));
         resolve();
       }).catch((error) => {
-        const message = error.response.data.error;
-        store.dispatch(LoginRedux.loginFail(message));
+        const errorMessage = error.response.data.error;
+        store.dispatch(LoginRedux.operationFail(errorMessage));
         reject(error);
       });
     });
@@ -50,12 +54,49 @@ class LoginController {
     });
   }
 
-  register() {
-
+  sendVerify() {
+    return new Promise((resolve, reject) => {
+      store.dispatch(LoginRedux.clearMessages());
+      const username = store.getState().login.username;
+      return axios.post('http://138.197.223.133:8000/api/v1/users/send_verify', {
+        username,
+      }).then((response) => {
+        const visibleMessage = response.data.message;
+        store.dispatch(LoginRedux.sendVerifySuccess(visibleMessage));
+        resolve();
+      }).catch((error) => {
+        const errorMessage = error.response.data.message;
+        store.dispatch(LoginRedux.operationFail(errorMessage));
+        reject();
+      });
+    });
   }
 
-  sendVerify() {
-
+  register() {
+    return new Promise((resolve, reject) => {
+      store.dispatch(LoginRedux.clearMessages());
+      const state = store.getState().login;
+      const username = state.username;
+      const agree = true; // TODO: Add checkbox
+      const invitationCode = null; // Disabled temperarily
+      const password = state.password;
+      const verificationCode = state.verificationCode;
+      return axios.post('http://138.197.223.133:8000/api/v1/users/register', {
+        username,
+        agree,
+        invitation_code: invitationCode,
+        password,
+        verification_code: verificationCode,
+      }).then((response) => {
+        const visibleMessage = response.data.message;
+        store.dispatch(LoginRedux.registerSuccess(visibleMessage));
+        resolve();
+      }).catch((error) => {
+        const errorMessage = error.response.data.message;
+        store.dispatch(LoginRedux.operationFail(errorMessage));
+        reject();
+      });
+    });
   }
 }
 

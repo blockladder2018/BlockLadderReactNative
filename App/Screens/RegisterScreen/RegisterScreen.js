@@ -8,12 +8,17 @@ import { LoginController } from 'App/Controllers';
 
 class RegisterScreen extends Component {
 
+  state = {
+    confirmPassword: '',
+  };
+
   render() {
     const {
       country,
       username,
       password,
       verificationCode,
+      visibleMessage,
       errorMessage,
     } = this.props;
 
@@ -27,7 +32,8 @@ class RegisterScreen extends Component {
         />
 
         <Input
-          label='User name'
+          label='Username'
+          placeholder='Mobile or email'
           value={username}
           onChangeText={(text) => LoginController.setUsername(text)}
           onSubmitEditing={() => console.log('username entered')}
@@ -42,30 +48,67 @@ class RegisterScreen extends Component {
         />
 
         <Input
+          label='Confirm Password'
+          value={this.state.confirmPassword}
+          secureTextEntry={true}
+          onChangeText={(text) => this.setState({ confirmPassword: text })}
+          onSubmitEditing={() => console.log('confirmPassword entered')}
+        />
+
+        <Input
           label='Verification code'
           value={verificationCode}
           onChangeText={(text) => LoginController.setVerificationCode(text)}
           onSubmitEditing={() => console.log('verificationCode entered')}
         />
 
-        <ButtonEnableDisable
-          disabled={_.isEmpty(country) || _.isEmpty(username) || _.isEmpty(password) || _.isEmpty(verificationCode)}
-          title='Submit'
-          onPress={() => {
-            console.log('Register new account');
-          }}
-        />
+        <View style={{ marginTop: 30 }}>
+          <ButtonEnableDisable
+            disabled={_.isEmpty(username)}
+            title='Send Verification Code'
+            onPress={() => {
+              console.log('Send Verification Code button pressed');
+              LoginController.sendVerify().then(() => {
+                console.log('Send verification code succedded!');
+              }).catch(() => {
+                console.log('Send verification code failed!');
+              });
+            }}
+          />
 
-        <ButtonDark
-          title='Cancel'
-          onPress={() => {
-            console.log('Cancel button pressed');
-            this.props.navigator.dismissModal({
-              animationType: 'slide-down',
-            })
-          }}
-        />
+          <ButtonEnableDisable
+            disabled={_.isEmpty(country) || _.isEmpty(username) || _.isEmpty(password) || _.isEmpty(verificationCode) || password !== this.state.confirmPassword}
+            title='Submit'
+            onPress={() => {
+              console.log('Register new account');
+              LoginController.register().then(() => {
+                console.log('Register successfully!');
+                this.props.navigator.dismissModal({ animationType: 'slide-down' });
+                LoginControler.clear();
+              }).catch(() => {
+                console.log('Register failed!');
+              });
+            }}
+          />
 
+          <ButtonDark
+            title='Cancel'
+            onPress={() => {
+              console.log('Cancel button pressed');
+              this.props.navigator.dismissModal({ animationType: 'slide-down' });
+              LoginController.clear();
+            }}
+          />
+
+          <View>
+            <Text style={{ color: 'black', textAlign: 'center', fontSize: 20 }}>
+              {visibleMessage}
+            </Text>
+            <Text style={{ color: 'red', textAlign: 'center', fontSize: 20 }}>
+              {errorMessage}
+            </Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -77,6 +120,7 @@ const mapStateToProps = ({ login }) => {
     username: login.username,
     password: login.password,
     verificationCode: login.verificationCode,
+    visibleMessage: login.visibleMessage,
     errorMessage: login.errorMessage,
   };
 };
