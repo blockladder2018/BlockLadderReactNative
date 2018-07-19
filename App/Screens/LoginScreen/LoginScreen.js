@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 
-import { ButtonDark, ButtonEnableDisable, Input, Spinner } from 'App/Components';
+import { ButtonDark, ButtonEnableDisable, ButtonLink, Input, Spinner } from 'App/Components';
 import { LoginController, NavigationController } from 'App/Controllers';
 
 class LoginScreen extends Component {
@@ -26,6 +26,7 @@ class LoginScreen extends Component {
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
         <Input
           label='Username'
+          placeholder='Mobile number'
           value={username}
           onChangeText={(text) => LoginController.setUsername(text)}
           onSubmitEditing={() => console.log('Username entered')}
@@ -63,7 +64,20 @@ class LoginScreen extends Component {
                 navigatorStyle: {},
                 animationType: 'slide-up',
               })
+            }}
+          />
 
+          <ButtonLink
+            title='Forgot your password'
+            onPress={() => {
+              console.log('Forgot your password pressed');
+              this.props.navigator.showModal({
+                screen: 'BlockLadderReactNative.ResetPasswordScreen',
+                title: 'Reset Password',
+                passProps: {},
+                navigatorStyle: {},
+                animationType: 'slide-up',
+              })
             }}
           />
 

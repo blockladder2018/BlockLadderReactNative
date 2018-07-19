@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ButtonDark, ButtonEnableDisable, Input } from 'App/Components';
 import { LoginController } from 'App/Controllers';
 
-class RegisterScreen extends Component {
+class ResetPasswordScreen extends Component {
 
   state = {
     confirmPassword: '',
@@ -40,15 +40,15 @@ class RegisterScreen extends Component {
         />
 
         <Input
-          label='Password'
+          label='New password'
           value={password}
           secureTextEntry={true}
           onChangeText={(text) => LoginController.setPassword(text)}
-          onSubmitEditing={() => console.log('password entered')}
+          onSubmitEditing={() => console.log('New password entered')}
         />
 
         <Input
-          label='Confirm Password'
+          label='Confirm new password'
           value={this.state.confirmPassword}
           secureTextEntry={true}
           onChangeText={(text) => this.setState({ confirmPassword: text })}
@@ -78,15 +78,15 @@ class RegisterScreen extends Component {
 
           <ButtonEnableDisable
             disabled={_.isEmpty(country) || _.isEmpty(username) || _.isEmpty(password) || _.isEmpty(verificationCode) || password !== this.state.confirmPassword}
-            title='Submit'
+            title='Reset Password'
             onPress={() => {
-              console.log('Register new account');
-              LoginController.register().then(() => {
-                console.log('Register successfully!');
+              console.log('Edit password');
+              LoginController.editPassword().then(() => {
+                console.log('Edit password successfully!');
                 this.props.navigator.dismissModal({ animationType: 'slide-down' });
                 LoginControler.clear();
               }).catch(() => {
-                console.log('Register failed!');
+                console.log('Edit password failed!');
               });
             }}
           />
@@ -125,4 +125,4 @@ const mapStateToProps = ({ login }) => {
   };
 };
 
-export default connect(mapStateToProps)(RegisterScreen);
+export default connect(mapStateToProps)(ResetPasswordScreen);

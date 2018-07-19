@@ -98,6 +98,29 @@ class LoginController {
       });
     });
   }
+
+  editPassword() {
+    return new Promise((resolve, reject) => {
+      store.dispatch(LoginRedux.clearMessages());
+      const state = store.getState().login;
+      const username = state.username;
+      const password = state.password;
+      const verificationCode = state.verificationCode;
+      return axios.post('http://138.197.223.133:8000/api/v1/users/edit_password', {
+        username,
+        password,
+        token: verificationCode,
+      }).then((response) => {
+        const visibleMessage = response.data.message;
+        store.dispatch(LoginRedux.registerSuccess(visibleMessage));
+        resolve();
+      }).catch((error) => {
+        const errorMessage = error.response.data.message;
+        store.dispatch(LoginRedux.operationFail(errorMessage));
+        reject();
+      });
+    });
+  }
 }
 
 export default LoginController;
