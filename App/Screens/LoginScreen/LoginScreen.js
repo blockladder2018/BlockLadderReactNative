@@ -2,11 +2,39 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
+import PhoneInput from 'react-native-phone-input';
+import CountryPicker from 'react-native-country-picker-modal';
 
 import { ButtonDark, ButtonEnableDisable, ButtonLink, Input, Spinner } from 'App/Components';
 import { LoginController, NavigationController } from 'App/Controllers';
+import CountryListConfig from 'App/Config/CountryListConfig.json';
+
+const COUNTRY_LIST = ['CN', 'US', 'JP', 'KR', 'FR', 'SG', 'IN'];
 
 class LoginScreen extends Component {
+
+  constructor() {
+    super();
+
+    this.onPressFlag = this.onPressFlag.bind(this);
+    this.selectCountry = this.selectCountry.bind(this);
+    this.state = { cca2: 'cn' };
+  }
+
+  componentDidMount() {
+    this.setState({
+      pickerData: this.phone.getPickerData(),
+    });
+  }
+
+  onPressFlag() {
+    this.countryPicker.openModal();
+  }
+
+  selectCountry(country) {
+    this.phone.selectCountry(country.cca2.toLowerCase());
+    this.setState({ cca2: country.cca2 });
+  }
 
   render() {
     const {
@@ -24,6 +52,23 @@ class LoginScreen extends Component {
 
     return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+        <PhoneInput
+          ref={(ref) => this.phone = ref }
+          onPressFlag = {this.onPressFlag}
+          countriesList={require('../../Config/CountryListConfig.json')}
+          initialCountry="cn"
+        />
+
+        <CountryPicker
+          ref={(ref) => this.countryPicker = ref }
+          countryList={COUNTRY_LIST}
+          onChange={(value) => this.selectCountry(value)}
+          translation="eng"
+          cca2={this.state.cca2}
+        >
+          <View />
+        </CountryPicker>
+
         <Input
           label='Username'
           placeholder='Mobile number'

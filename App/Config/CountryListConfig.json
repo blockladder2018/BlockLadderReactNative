@@ -1,0 +1,51 @@
+[
+  {
+    "name": "China (中国)",
+     "iso2": "cn",
+     "dialCode": "86",
+     "priority": 0,
+     "areaCodes": null
+  },
+  {
+    "name": "United States",
+    "iso2": "us",
+    "dialCode": "1",
+    "priority": 0,
+    "areaCodes": null
+  },
+  {
+    "name": "Japan (日本)",
+    "iso2": "jp",
+    "dialCode": "81",
+    "priority": 0,
+    "areaCodes": null
+  },
+  {
+    "name": "South Korea (대한민국)",
+    "iso2": "kr",
+    "dialCode": "82",
+    "priority": 0,
+    "areaCodes": null
+  },
+  {
+    "name": "France",
+    "iso2": "fr",
+    "dialCode": "33",
+    "priority": 0,
+    "areaCodes": null
+  },
+  {
+    "name": "Singapore",
+    "iso2": "sg",
+    "dialCode": "65",
+    "priority": 0,
+    "areaCodes": null
+  },
+  {
+    "name": "India (भारत)",
+    "iso2": "in",
+    "dialCode": "91",
+    "priority": 0,
+    "areaCodes": null
+  }
+]
