@@ -57,6 +57,9 @@ class LoginScreen extends Component {
           onPressFlag = {this.onPressFlag}
           countriesList={require('../../Config/CountryListConfig.json')}
           initialCountry="cn"
+          style={{ padding: 20 }}
+          flagStyle={{ width: 50, height: 30 }}
+          textStyle={{ fontSize: 20 }}
         />
 
         <CountryPicker
