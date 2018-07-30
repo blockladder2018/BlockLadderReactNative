@@ -5,6 +5,7 @@ import ButtonLink from './ButtonLink';
 import Input from './Input';
 import PickerWithLabel from './PickerWithLabel';
 import Spinner from './Spinner';
+import PhoneNumberInput from './PhoneNumberInput';
 
 export {
   ButtonDark,
@@ -14,4 +15,5 @@ export {
   Input,
   PickerWithLabel,
   Spinner,
+  PhoneNumberInput,
 };

@@ -4,8 +4,7 @@ import axios from 'axios';
 
 /* ------------- Initial State ------------- */
 export const INITIAL_STATE = Immutable({
-  country: '',
-  username: '',
+  mobileNumber: '',
   password: '',
   verificationCode: '',
   token: '',
@@ -17,8 +16,7 @@ export const INITIAL_STATE = Immutable({
 
 /* ------------- Types and Action Creators ------------- */
 const { Types, Creators } = createActions({
-  setCountry: ['country'],
-  setUsername: ['username'],
+  setMobileNumber: ['mobileNumber'],
   setPassword: ['password'],
   setVerificationCode: ['verificationCode'],
   setToken: ['token'],
@@ -36,12 +34,8 @@ const { Types, Creators } = createActions({
 export default Creators;
 
 /* ------------- Reducers ------------- */
-export const setCountryReducer = (state = INITIAL_STATE, { country }) => {
-  return state.merge({ country });
-};
-
-export const setUsernameReducer = (state = INITIAL_STATE, { username }) => {
-  return state.merge({ username });
+export const setMobileNumberReducer = (state = INITIAL_STATE, { mobileNumber }) => {
+  return state.merge({ mobileNumber });
 };
 
 export const setPasswordReducer = (state = INITIAL_STATE, { password }) => {
@@ -98,8 +92,7 @@ export const clearReducer = () => INITIAL_STATE;
 
 /* ------------- Hookup Reducers To Types ------------- */
 export const reducer = createReducer(INITIAL_STATE, {
-  [Types.SET_COUNTRY]: setCountryReducer,
-  [Types.SET_USERNAME]: setUsernameReducer,
+  [Types.SET_MOBILE_NUMBER]: setMobileNumberReducer,
   [Types.SET_PASSWORD]: setPasswordReducer,
   [Types.SET_VERIFICATION_CODE]: setVerificationCodeReducer,
   [Types.SET_TOKEN]: setTokenReducer,

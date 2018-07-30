@@ -2,44 +2,15 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
-import PhoneInput from 'react-native-phone-input';
-import CountryPicker from 'react-native-country-picker-modal';
 
-import { ButtonDark, ButtonEnableDisable, ButtonLink, Input, Spinner } from 'App/Components';
+import { ButtonDark, ButtonEnableDisable, ButtonLink, Input, Spinner, PhoneNumberInput } from 'App/Components';
 import { LoginController, NavigationController } from 'App/Controllers';
-import CountryListConfig from 'App/Config/CountryListConfig.json';
-
-const COUNTRY_LIST = ['CN', 'US', 'JP', 'KR', 'FR', 'SG', 'IN'];
 
 class LoginScreen extends Component {
 
-  constructor() {
-    super();
-
-    this.onPressFlag = this.onPressFlag.bind(this);
-    this.selectCountry = this.selectCountry.bind(this);
-    this.state = { cca2: 'cn' };
-  }
-
-  componentDidMount() {
-    this.setState({
-      pickerData: this.phone.getPickerData(),
-    });
-  }
-
-  onPressFlag() {
-    this.countryPicker.openModal();
-  }
-
-  selectCountry(country) {
-    this.phone.selectCountry(country.cca2.toLowerCase());
-    this.setState({ cca2: country.cca2 });
-  }
-
   render() {
     const {
-      country,
-      username,
+      mobileNumber,
       password,
       verificationCode,
       isLogging,
@@ -52,33 +23,8 @@ class LoginScreen extends Component {
 
     return (
       <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-        <PhoneInput
-          ref={(ref) => this.phone = ref }
-          onPressFlag = {this.onPressFlag}
-          countriesList={require('../../Config/CountryListConfig.json')}
-          initialCountry="cn"
-          style={{ padding: 20 }}
-          flagStyle={{ width: 50, height: 30 }}
-          textStyle={{ fontSize: 20 }}
-        />
 
-        <CountryPicker
-          ref={(ref) => this.countryPicker = ref }
-          countryList={COUNTRY_LIST}
-          onChange={(value) => this.selectCountry(value)}
-          translation="eng"
-          cca2={this.state.cca2}
-        >
-          <View />
-        </CountryPicker>
-
-        <Input
-          label='Username'
-          placeholder='Mobile number'
-          value={username}
-          onChangeText={(text) => LoginController.setUsername(text)}
-          onSubmitEditing={() => console.log('Username entered')}
-        />
+        <PhoneNumberInput />
 
         <Input
           label='Password'
@@ -90,7 +36,7 @@ class LoginScreen extends Component {
 
         <View style={{ marginTop: 30 }}>
           <ButtonEnableDisable
-            disabled={_.isEmpty(username) || _.isEmpty(password)}
+            disabled={_.isEmpty(mobileNumber) || _.isEmpty(password)}
             title='Login'
             onPress={() => {
               LoginController.login().then(() => {
@@ -142,8 +88,7 @@ class LoginScreen extends Component {
 
 const mapStateToProps = ({ login }) => {
   return {
-    country: login.country,
-    username: login.username,
+    mobileNumber: login.mobileNumber,
     password: login.password,
     verificationCode: login.verificationCode,
     token: login.token,
